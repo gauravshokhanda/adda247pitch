@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adda247 — Live Audit Findings · CodePlaced</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4f8;
+  --white: #ffffff;
+  --navy: #0d2137;
+  --navy2: #1a3a56;
+  --teal: #0e7490;
+  --teal2: #0891b2;
+  --teal-bg: rgba(14,116,144,0.07);
+  --teal-bd: rgba(14,116,144,0.2);
+  --border: #e2e8f0;
+  --text: #334155;
+  --muted: #64748b;
+  --light: #94a3b8;
+  --red: #dc2626;
+  --red-bg: rgba(220,38,38,0.06);
+  --red-bd: rgba(220,38,38,0.18);
+  --amber: #d97706;
+  --amber-bg: rgba(217,119,6,0.07);
+  --amber-bd: rgba(217,119,6,0.2);
+  --green: #059669;
+  --green-bg: rgba(5,150,105,0.07);
+  --green-bd: rgba(5,150,105,0.2);
+  --sans: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;padding:0 28px;}
+.nav-inner{max-width:860px;margin:0 auto;height:54px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--navy);font-size:13.5px;}
+.logo{width:26px;height:26px;background:var(--navy);border-radius:6px;display:flex;align-items:center;justify-content:center;color:white;font-family:var(--mono);font-size:9.5px;font-weight:600;}
+.nav-pill{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);padding:4px 12px;border-radius:20px;}
+.nav-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1.4s ease infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+
+.hero{background:var(--white);border-bottom:1px solid var(--border);padding:50px 28px 44px;}
+.hero-inner{max-width:860px;margin:0 auto;}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--border);background:var(--bg);padding:4px 13px;border-radius:20px;margin-bottom:20px;}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+h1{font-size:clamp(26px,4vw,42px);font-weight:800;color:var(--navy);letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px;}
+h1 .r{color:var(--red);}
+h1 .t{color:var(--teal);}
+.hero-sub{font-size:15px;color:var(--muted);max-width:560px;line-height:1.75;margin-bottom:30px;}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.hs{border-left:2px solid var(--border);padding-left:16px;}
+.hs-val{font-size:22px;font-weight:800;letter-spacing:-0.6px;line-height:1;font-family:var(--mono);}
+.hs-val.r{color:var(--red);}
+.hs-val.a{color:var(--amber);}
+.hs-lbl{font-size:11px;color:var(--light);margin-top:3px;}
+
+.wrap{max-width:860px;margin:0 auto;padding:0 28px;}
+section{padding:40px 0 0;}
+
+.sec-eyebrow{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:8px;}
+.sec-eyebrow::before{content:'';width:18px;height:2px;border-radius:2px;}
+.sec-eyebrow.red{color:var(--red);}
+.sec-eyebrow.red::before{background:var(--red);}
+.sec-eyebrow.teal{color:var(--teal);}
+.sec-eyebrow.teal::before{background:var(--teal);}
+.sec-title{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;margin-bottom:6px;}
+.sec-sub{font-size:13.5px;color:var(--muted);margin-bottom:20px;line-height:1.7;max-width:600px;}
+
+.finding{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.04);}
+.finding.crit{border-top:3px solid var(--red);}
+.finding.warn{border-top:3px solid var(--amber);}
+.f-head{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.finding.crit .f-head{background:var(--red-bg);}
+.finding.warn .f-head{background:var(--amber-bg);}
+.f-badge{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;}
+.finding.crit .f-badge{color:var(--red);}
+.finding.warn .f-badge{color:var(--amber);}
+.f-badge::before{content:'';width:7px;height:7px;border-radius:50%;animation:blink 1.4s ease infinite;}
+.finding.crit .f-badge::before{background:var(--red);}
+.finding.warn .f-badge::before{background:var(--amber);}
+.f-id{font-family:var(--mono);font-size:10px;color:var(--light);}
+.f-body{padding:20px 22px 18px;}
+.f-body h3{font-size:16px;font-weight:800;color:var(--navy);letter-spacing:-0.3px;margin-bottom:8px;}
+.f-body>p{font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7;}
+
+.url-box{background:var(--navy);border-radius:10px;padding:15px 18px;font-family:var(--mono);font-size:12px;line-height:2;margin-bottom:14px;position:relative;}
+.url-box::after{content:attr(data-label);position:absolute;top:0;right:0;font-size:9px;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);padding:4px 10px;border-radius:0 10px 0 6px;}
+.u-base{color:#6b7db8;}
+.u-ok{color:#34d399;}
+.u-note{color:#3d5166;font-size:10.5px;margin-left:6px;}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.mini{border-radius:10px;padding:14px 16px;border:1px solid transparent;}
+.mini.bad{background:var(--red-bg);border-color:var(--red-bd);}
+.mini.good{background:var(--green-bg);border-color:var(--green-bd);}
+.mini .tag{font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:7px;}
+.mini.bad .tag{color:var(--red);}
+.mini.good .tag{color:var(--green);}
+.mini p{font-size:12.5px;color:var(--text);line-height:1.6;}
+
+.insight{border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.7;border:1px solid transparent;margin-bottom:6px;}
+.insight.red{background:var(--red-bg);border-color:var(--red-bd);color:#7f1d1d;}
+.insight.amber{background:var(--amber-bg);border-color:var(--amber-bd);color:#78350f;}
+.insight strong{font-weight:700;}
+
+.pages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.page-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px 14px;}
+.page-card.rc{background:var(--red-bg);border-color:var(--red-bd);}
+.page-name{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.page-meta{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.page-cta{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;}
+.page-cta.wa{background:rgba(37,211,102,0.1);color:#16a34a;border:1px solid rgba(37,211,102,0.25);}
+.page-cta.web{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-bd);}
+
+.build-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.build-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color 0.2s,transform 0.2s;}
+.build-card:hover{border-color:var(--teal-bd);transform:translateY(-2px);}
+.build-icon{font-size:20px;margin-bottom:8px;}
+.build-card h4{font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.build-card p{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+.cs{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.cs-top{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:22px 26px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.cs-top-left .lbl{font-size:9.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px;}
+.cs-top-left h3{font-size:20px;font-weight:800;color:white;letter-spacing:-0.4px;margin-bottom:3px;}
+.cs-top-left p{font-size:12px;color:rgba(255,255,255,0.4);}
+.cs-badge{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:11px 15px;text-align:center;flex-shrink:0;}
+.cs-badge .v{font-size:18px;font-weight:800;color:#34d399;line-height:1;}
+.cs-badge .l{font-size:10px;color:rgba(255,255,255,0.3);margin-top:3px;line-height:1.3;}
+.cs-body{padding:18px 26px;}
+.cs-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.cs-stat{background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:9px;padding:11px 10px;text-align:center;}
+.cs-stat .v{font-size:16px;font-weight:800;color:var(--teal);line-height:1;}
+.cs-stat .l{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.3;}
+.quote{background:var(--bg);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:12px 15px;font-size:13px;color:var(--text);font-style:italic;line-height:1.7;}
+.quote cite{display:block;margin-top:6px;font-style:normal;font-size:10.5px;color:var(--light);font-weight:600;}
+
+.pricing{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:10px;margin-bottom:14px;}
+.price-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 16px;}
+.price-card.feat{border-color:var(--teal);border-width:2px;position:relative;}
+.price-card.feat::before{content:'RECOMMENDED';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--teal);color:white;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 12px;border-radius:20px;}
+.p-lbl{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:8px;}
+.p-val{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-0.8px;margin-bottom:3px;line-height:1;}
+.price-card.feat .p-val{color:var(--teal);}
+.p-per{font-size:11.5px;color:var(--light);margin-bottom:12px;}
+.p-list{list-style:none;}
+.p-list li{font-size:12.5px;color:var(--muted);padding:5px 0 5px 14px;position:relative;border-bottom:1px solid var(--border);line-height:1.4;}
+.p-list li:last-child{border-bottom:none;}
+.p-list li::before{content:'→';position:absolute;left:0;color:var(--teal);font-size:10px;top:7px;}
+
+.cta-box{background:var(--navy);border-radius:16px;padding:38px 32px;text-align:center;margin-bottom:14px;}
+.cta-box h2{font-size:24px;font-weight:800;color:white;letter-spacing:-0.5px;margin-bottom:9px;}
+.cta-box p{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.75;}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-p{background:var(--teal);color:white;border:none;padding:12px 26px;border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;font-family:var(--sans);transition:background 0.2s,transform 0.15s;}
+.btn-p:hover{background:var(--teal2);transform:translateY(-1px);}
+.btn-s{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.7);padding:12px 26px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-family:var(--sans);}
+
+hr{border:none;border-top:1px solid var(--border);margin:40px 0 0;}
+footer{border-top:1px solid var(--border);background:var(--white);padding:18px 28px;}
+.footer-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-brand{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.footer-note{font-family:var(--mono);font-size:11px;color:var(--light);}
+.footer-note a{color:var(--teal);text-decoration:none;}
+
+.fade{opacity:0;transform:translateY(12px);animation:up 0.38s ease forwards;}
+@keyframes up{to{opacity:1;transform:translateY(0);}}
+.d1{animation-delay:.04s}.d2{animation-delay:.1s}.d3{animation-delay:.17s}.d4{animation-delay:.24s}
+
+@media(max-width:600px){
+  .two,.build-grid,.pricing,.pages-grid,.cs-stats{grid-template-columns:1fr;}
+  .cs-top{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand"><div class="logo">CP</div>CodePlaced</div>
+    <div class="nav-pill">Live Audit · Adda247 · 8 Mar 2026</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow fade d1"><span class="eyebrow-dot"></span>Verified live · Facebook Ad Library · 8 March 2026</div>
+    <h1 class="fade d1">
+      42 active ads.<br>
+      <span class="r">No way to see</span><br>
+      <span class="t">what's actually working.</span>
+    </h1>
+    <p class="hero-sub fade d2">We audited every active Adda247 Facebook ad this morning. 42 ads across 9 separate brand pages — zero unified tracking, branch leads disappearing into WhatsApp, no Google Search presence at all.</p>
+    <div class="hero-stats fade d3">
+      <div class="hs"><div class="hs-val r">42</div><div class="hs-lbl">Active ads · verified today</div></div>
+      <div class="hs"><div class="hs-val r">9</div><div class="hs-lbl">Separate pages · no central view</div></div>
+      <div class="hs"><div class="hs-val r">5</div><div class="hs-lbl">Branches sending leads to WhatsApp</div></div>
+      <div class="hs"><div class="hs-val a">₹0</div><div class="hs-lbl">Google Search spend</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section class="fade d1">
+  <div class="sec-eyebrow red">01 — Live Findings</div>
+  <div class="sec-title">4 Things We Found This Morning</div>
+  <div class="sec-sub">Every finding below is verifiable. Open Facebook Ad Library and check yourself.</div>
+</section>
+
+<!-- F1 -->
+<div class="finding crit fade d2">
+  <div class="f-head">
+    <div class="f-badge">🔴 CRITICAL — Zero Campaign Tracking on All Ads</div>
+    <div class="f-id">Library ID: 1972359056822864 · Active now</div>
+  </div>
+  <div class="f-body">
+    <h3>Every ad click lands on a clean homepage. No campaign data passes through.</h3>
+    <p>We clicked the main Adda247 ad — Delhi Laxmi Nagar, active right now. Destination URL and the app deep link in the advertiser description are both completely untracked.</p>
+
+    <div class="url-box" data-label="VERIFIED · 8 MAR 2026">
+      <div><span class="u-base">https://www.adda247.com/</span><span class="u-note">← full URL. nothing after this.</span></div>
+      <div style="margin-top:6px;color:#2d4055;font-size:10.5px;">App link in advertiser description:</div>
+      <div><span class="u-base">applink.adda247.com/d/JBCUTYDrL2</span><span class="u-note">← generic. no campaign, no vertical, no branch.</span></div>
+      <div style="margin-top:10px;color:#2d4055;font-size:10.5px;">— What it should look like —</div>
+      <div><span class="u-base">adda247.com/?</span><span class="u-ok">utm_source=facebook</span>&<span class="u-ok">utm_campaign=Banking_Hindi_Delhi</span>&<span class="u-ok">utm_medium=cpc</span></div>
+    </div>
+
+    <div class="two">
+      <div class="mini bad">
+        <div class="tag">What your CRM sees today</div>
+        <p>Source = <strong style="color:var(--red);">Direct / None</strong><br>Campaign = <strong style="color:var(--red);">unknown</strong><br>Vertical = <strong style="color:var(--red);">unknown</strong><br><br>All 42 ads produce leads that look identical. No way to see which ad, which branch, which exam drove a single enrollment.</p>
+      </div>
+      <div class="mini good">
+        <div class="tag">What it should look like</div>
+        <p>Source = <strong style="color:var(--green);">facebook</strong><br>Campaign = <strong style="color:var(--green);">Banking_Bengali_Kolkata</strong><br>Vertical = <strong style="color:var(--green);">Banking</strong><br><br>Every lead tagged from the first click. Budget decisions take 30 seconds, not a week.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- F2 -->
+<div class="finding crit fade d2">
+  <div class="f-head">
+    <div class="f-badge">🔴 CRITICAL — 9 Separate Pages, No Unified View</div>
+    <div class="f-id">All active · verified today</div>
+  </div>
+  <div class="f-body">
+    <h3>9 Facebook pages running ads with no shared tracking, no shared naming, no central report.</h3>
+    <p>There is no single report today that shows performance across all of these simultaneously.</p>
+
+    <div class="pages-grid">
+      <div class="page-card">
+        <div class="page-name">Adda247</div>
+        <div class="page-meta">34 ads · Main brand</div>
+        <div class="page-cta web">→ adda247.com</div>
+      </div>
+      <div class="page-card">
+        <div class="page-name">Adda247 School</div>
+        <div class="page-meta">CUET · CLAT · BBA/BCom</div>
+        <div class="page-cta web">→ app / fb.me</div>
+      </div>
+      <div class="page-card">
+        <div class="page-name">Adda247 Bengali</div>
+        <div class="page-meta">WBP · KP · SSC · WBCS</div>
+        <div class="page-cta web">→ adda247.com</div>
+      </div>
+      <div class="page-card rc">
+        <div class="page-name">Career Power Jodhpur</div>
+        <div class="page-meta">Banking · CUET</div>
+        <div class="page-cta wa">→ WhatsApp</div>
+      </div>
+      <div class="page-card rc">
+        <div class="page-name">Career Power Kolkata</div>
+        <div class="page-meta">Banking · SSC offline</div>
+        <div class="page-cta wa">→ WhatsApp</div>
+      </div>
+      <div class="page-card rc">
+        <div class="page-name">Career Power Bardhaman</div>
+        <div class="page-meta">Banking · Nursing</div>
+        <div class="page-cta wa">→ WhatsApp</div>
+      </div>
+      <div class="page-card rc">
+        <div class="page-name">Career Power Medinipur</div>
+        <div class="page-meta">Nursing · ANM · GNM</div>
+        <div class="page-cta wa">→ WhatsApp</div>
+      </div>
+      <div class="page-card rc">
+        <div class="page-name">Career Power Bilaspur</div>
+        <div class="page-meta">CUET · Banking · SSC</div>
+        <div class="page-cta wa">→ WhatsApp</div>
+      </div>
+      <div class="page-card">
+        <div class="page-name">NextLeap</div>
+        <div class="page-meta">Product Management</div>
+        <div class="page-cta web">→ nextleap.app</div>
+      </div>
+    </div>
+
+    <div class="insight red"><strong>The question no one can answer right now:</strong> Which branch, which exam, which language generated the most paid enrollments this month — across all 9 pages combined? This number does not exist anywhere today.</div>
+  </div>
+</div>
+
+<!-- F3 -->
+<div class="finding crit fade d3">
+  <div class="f-head">
+    <div class="f-badge">🔴 CRITICAL — 5 Branches Sending Leads to WhatsApp</div>
+    <div class="f-id">Jodhpur · Kolkata · Bardhaman · Medinipur · Bilaspur</div>
+  </div>
+  <div class="f-body">
+    <h3>A student clicks a paid ad and messages a local branch manager's number. That lead never enters any central system.</h3>
+
+    <div class="two">
+      <div class="mini bad">
+        <div class="tag">What happens today</div>
+        <p>Student clicks ad → WhatsApp opens → messages local number → conversation on a personal phone → <strong style="color:var(--red);">lead never reaches CRM</strong> → no follow-up → no conversion tracking → head office has zero record this lead existed.</p>
+      </div>
+      <div class="mini good">
+        <div class="tag">What it should look like</div>
+        <p>Student clicks ad → WhatsApp Business API captures lead → <strong style="color:var(--green);">tagged with branch + exam + campaign</strong> → entered into central CRM → counselor assigned → conversion tracked to the exact ad that drove it.</p>
+      </div>
+    </div>
+
+    <div class="insight amber"><strong>Also found:</strong> Women's Day offers live on 8 & 9 March for Kanpur, Indore, Jaipur, Lucknow, Muzaffarpur — Jaipur offering up to ₹5,000 off. High-intent, time-limited leads. Jaipur sending directly to WhatsApp. Every one disappears the moment they click.</div>
+  </div>
+</div>
+
+<!-- F4 -->
+<div class="finding warn fade d3">
+  <div class="f-head">
+    <div class="f-badge">🟡 Zero Google Search Ads — High-Intent Traffic Going Elsewhere</div>
+    <div class="f-id">Verified · Google Search · 8 Mar 2026</div>
+  </div>
+  <div class="f-body">
+    <h3>Students searching "banking exam course" or "SSC preparation 2026" today are not finding Adda247.</h3>
+    <p>We checked the exact terms your target students search on Google. Zero paid ads from Adda247 across Banking, SSC, and UPSC. Facebook reaches someone scrolling. Google catches someone who already typed "I want to prepare right now." That traffic exists — and it's going to competitors.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- CASE STUDY -->
+<section class="fade d1">
+  <div class="sec-eyebrow teal">02 — We've Done This Before</div>
+  <div class="sec-title">Get My Course — Same Problem, Already Fixed</div>
+  <div class="sec-sub">An EdTech with multi-channel ads, a CRM, and zero unified attribution. Here's what we delivered.</div>
+</section>
+
+<div class="cs fade d2">
+  <div class="cs-top">
+    <div class="cs-top-left">
+      <div class="lbl">Case Study · EdTech · India</div>
+      <h3>Get My Course</h3>
+      <p>Meta Ads + Google Ads + LinkedIn · LeadSquared CRM · Razorpay</p>
+    </div>
+    <div class="cs-badge">
+      <div class="v">₹40K/mo</div>
+      <div class="l">Wasted spend found<br>in Week 2</div>
+    </div>
+  </div>
+  <div class="cs-body">
+    <div class="cs-stats">
+      <div class="cs-stat"><div class="v">2hr → 0</div><div class="l">Monday manual reporting eliminated</div></div>
+      <div class="cs-stat"><div class="v">Real-time</div><div class="l">Live dashboard replaced weekly exports</div></div>
+      <div class="cs-stat"><div class="v">Full funnel</div><div class="l">Ad → counselor → payment tracked</div></div>
+    </div>
+    <div class="quote">
+      "We went from spending Monday mornings pulling data from 6 platforms to checking one live dashboard before our first meeting. Counselor-wise revenue attribution alone changed how we run the sales team."
+      <cite>— Head of Marketing, Get My Course</cite>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- WHAT WE BUILD -->
+<section class="fade d1">
+  <div class="sec-eyebrow teal">03 — What We Build</div>
+  <div class="sec-title">One Dashboard. Real Profit Visibility.</div>
+  <div class="sec-sub">Ad spend on one side. Enrollments and payments on the other. Everything connected — across all 9 pages, all branches, all verticals. Updated daily, automatically.</div>
+</section>
+
+<div class="build-grid fade d2">
+  <div class="build-card">
+    <div class="build-icon">🏗️</div>
+    <h4>Unified Data Warehouse</h4>
+    <p>All 9 Facebook pages + CRM + payment gateway into one place. First time ad spend and enrollment revenue sit in the same system.</p>
+  </div>
+  <div class="build-card">
+    <div class="build-icon">🔧</div>
+    <h4>UTM Structure Across All Pages</h4>
+    <p>Brand → vertical → language → branch → format. Every click tagged from Day 1. Every lead identifiable from the moment it lands.</p>
+  </div>
+  <div class="build-card">
+    <div class="build-icon">📲</div>
+    <h4>WhatsApp Lead Pipeline</h4>
+    <p>WhatsApp Business API connected to central CRM. Branch leads stop disappearing. Every inquiry captured, tagged, and assigned automatically.</p>
+  </div>
+  <div class="build-card">
+    <div class="build-icon">📊</div>
+    <h4>Real Profit Dashboard</h4>
+    <p>Which branch × which vertical × which language gives the best cost-per-enrollment. The single number that makes budget decisions obvious every morning.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- PRICING -->
+<section class="fade d1">
+  <div class="sec-eyebrow teal">04 — Investment</div>
+  <div class="sec-title">Three Ways to Start</div>
+</section>
+
+<div class="pricing fade d2" style="margin-top:20px;">
+  <div class="price-card">
+    <div class="p-lbl">Free Start</div>
+    <div class="p-val">₹0</div>
+    <div class="p-per">No commitment</div>
+    <ul class="p-list">
+      <li>30-min call with your team</li>
+      <li>Live walkthrough of all 4 findings</li>
+      <li>Show Get My Course dashboard live</li>
+      <li>Scope the solution together</li>
+    </ul>
+  </div>
+  <div class="price-card feat">
+    <div class="p-lbl">Full Setup</div>
+    <div class="p-val">₹1L – ₹1.25L</div>
+    <div class="p-per">One-time · 6–8 weeks</div>
+    <ul class="p-list">
+      <li>UTM structure across all 9 pages</li>
+      <li>All brands unified in BigQuery</li>
+      <li>WhatsApp pipeline — all branches</li>
+      <li>Payment attribution layer</li>
+      <li>Real profit dashboard</li>
+      <li>Team training + documentation</li>
+      <li>30-day post-delivery support</li>
+    </ul>
+  </div>
+  <div class="price-card">
+    <div class="p-lbl">Monthly Retainer</div>
+    <div class="p-val">₹35K – ₹40K</div>
+    <div class="p-per">Per month · after setup</div>
+    <ul class="p-list">
+      <li>UTM maintenance as campaigns change</li>
+      <li>New branch onboarding</li>
+      <li>Monthly insight report</li>
+      <li>Budget reallocation recommendations</li>
+    </ul>
+  </div>
+</div>
+
+<div class="cta-box fade d3" style="margin-top:32px;">
+  <h2>Start with 20 minutes</h2>
+  <p>We'll show you the Get My Course dashboard live — full funnel, counselor-wise revenue, cross-channel attribution. Then walk through what Adda247's unified profit view would look like.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-p" onclick="alert('Add your Calendly link here')">Book a Call →</a>
+    <a href="mailto:hello@codeplaced.com" class="btn-s">Email Us</a>
+  </div>
+</div>
+
+<br>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="logo">CP</div>CodePlaced · codeplaced.com</div>
+    <div class="footer-note"><a href="https://www.facebook.com/ads/library/?q=%22Adda247%22" target="_blank">Verify findings → Facebook Ad Library</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
